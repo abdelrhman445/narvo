@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, Loader2, Mail, CheckCircle2, Users } from 'lucide-react';
+import { Send, Loader2, Mail, CheckCircle2, Zap } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,56 +13,15 @@ const broadcastSchema = z.object({
   html: z.string().min(10, 'Email body too short').max(100000),
 });
 
-const EMAIL_TEMPLATES = [
-  {
-    name: 'New Arrivals',
-    subject: '🆕 New Products Just Arrived!',
-    html: `<div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f8f6;">
-  <div style="background: white; border-radius: 16px; padding: 32px; border: 1px solid #e8e4dc;">
-    <div style="text-align: center; margin-bottom: 24px;">
-      <div style="width: 56px; height: 56px; background: #f97316; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-        <span style="color: white; font-size: 24px;">🛍️</span>
-      </div>
-      <h1 style="font-size: 28px; color: #1a1007; margin: 0 0 8px;">New Arrivals!</h1>
-      <p style="color: #9a8774; font-size: 14px; margin: 0;">Fresh products just landed in our store</p>
-    </div>
-    <p style="color: #4a3728; font-size: 15px; line-height: 1.6;">We have exciting new products waiting for you. Don't miss out on our latest collection!</p>
-    <div style="text-align: center; margin: 28px 0;">
-      <a href="http://localhost:3000" style="background: #f97316; color: white; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 15px;">Shop Now →</a>
-    </div>
-    <p style="color: #9a8774; font-size: 12px; text-align: center; margin-top: 24px; border-top: 1px solid #e8e4dc; padding-top: 16px;">
-      You're receiving this because you have an account with us.
-    </p>
-  </div>
-</div>`,
-  },
-  {
-    name: 'Flash Sale',
-    subject: '⚡ Flash Sale — Up to 50% Off!',
-    html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #fff7f0;">
-  <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid #fed7aa;">
-    <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 32px; text-align: center;">
-      <h1 style="color: white; font-size: 36px; margin: 0 0 8px;">⚡ FLASH SALE</h1>
-      <p style="color: rgba(255,255,255,0.9); font-size: 18px; margin: 0;">Up to 50% off selected products</p>
-    </div>
-    <div style="padding: 32px;">
-      <p style="color: #4a3728; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 24px;">
-        Hurry! This sale won't last long. Grab your favourites before they're gone.
-      </p>
-      <div style="text-align: center;">
-        <a href="http://localhost:3000" style="background: #f97316; color: white; padding: 16px 36px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block;">Claim Your Discount</a>
-      </div>
-    </div>
-  </div>
-</div>`,
-  },
-];
+const INPUT_BASE = 'w-full px-5 py-4 rounded-2xl text-sm font-bold border bg-[#020617] text-white placeholder-slate-500 outline-none transition-all focus:ring-2 shadow-inner';
+const INPUT_OK = 'border-slate-700 focus:border-indigo-500 focus:ring-indigo-500/20 hover:border-slate-600';
+const INPUT_ERR = 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500/20';
 
 export default function MarketingPage() {
   const [sent, setSent] = useState(false);
   const [result, setResult] = useState(null);
 
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(broadcastSchema),
     defaultValues: { subject: '', html: '' },
   });
@@ -74,159 +33,153 @@ export default function MarketingPage() {
       const res = await adminApi.post('/admin/marketing/broadcast', data);
       setResult(res.data.data);
       setSent(true);
-      toast.success('Broadcast queued!', { description: res.data.message });
+      toast.success('تمت إضافة الحملة للطابور بنجاح!', { description: res.data.message });
     } catch (err) {
-      toast.error('Broadcast failed', { description: err.message });
+      toast.error('فشل في إرسال الحملة', { description: err.message });
     }
   };
 
-  const applyTemplate = (template) => {
-    setValue('subject', template.subject);
-    setValue('html', template.html);
-    setSent(false);
-    toast.success(`Template "${template.name}" loaded`);
-  };
-
+  /* ── Success state ──────────────────────────────────────── */
   if (sent && result) {
     return (
-      <div className="max-w-lg mx-auto animate-slide-up">
-        <div className="bg-white border border-border rounded-2xl p-8 text-center">
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-5">
-            <CheckCircle2 className="w-10 h-10 text-emerald-500" strokeWidth={1.5} />
-          </div>
-          <h2 className="font-display text-3xl text-foreground mb-2">Broadcast Queued!</h2>
-          <p className="text-muted-foreground mb-6">Emails are being sent in the background in batches of 50.</p>
+      <div className="max-w-xl mx-auto mt-12 animate-in fade-in zoom-in duration-500" dir="rtl">
+        <div className="bg-[#0f172a] rounded-[2rem] border border-slate-800 overflow-hidden shadow-2xl relative">
+          
+          {/* Green top bar */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600" />
 
-          <div className="bg-secondary/40 rounded-xl p-4 text-left space-y-2.5 mb-6">
-            {[
-              ['Subject', result.subject],
-              ['Recipients', `${result.totalRecipients} users`],
-              ['Queued at', new Date(result.queuedAt).toLocaleString()],
-              ['Queued by', result.queuedBy],
-            ].map(([label, value]) => (
-              <div key={label} className="flex justify-between text-sm">
-                <span className="text-muted-foreground font-mono text-xs uppercase">{label}</span>
-                <span className="font-medium text-foreground">{value}</span>
-              </div>
-            ))}
-          </div>
+          <div className="p-10 text-center">
+            <div className="w-24 h-24 bg-emerald-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-lg shadow-emerald-500/10">
+              <CheckCircle2 className="w-12 h-12 text-emerald-400" strokeWidth={2} />
+            </div>
+            <h2 className="text-2xl font-black text-white mb-2">تم تجهيز الحملة للإرسال!</h2>
+            <p className="text-sm font-bold text-slate-400 mb-8">يتم الآن إرسال الإيميلات في الخلفية على دفعات لتجنب الحظر.</p>
 
-          <button
-            onClick={() => { setSent(false); setResult(null); reset(); }}
-            className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors"
-          >
-            <Mail className="w-4 h-4" /> Send Another
-          </button>
+            <div className="bg-[#020617] rounded-2xl p-6 text-left space-y-4 mb-8 border border-slate-800 shadow-inner" dir="ltr">
+              {[
+                ['Subject', result.subject],
+                ['Recipients', <span key="rec" className="text-indigo-400">{result.totalRecipients} users</span>],
+                ['Queued at', new Date(result.queuedAt).toLocaleString()],
+                ['Sent by', result.queuedBy],
+              ].map(([label, value]) => (
+                <div key={label} className="flex items-start justify-between gap-4 border-b border-slate-800/60 pb-3 last:border-0 last:pb-0">
+                  <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest mt-0.5 flex-shrink-0">{label}</span>
+                  <span className="text-sm font-bold text-white text-right">{value}</span>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => { setSent(false); setResult(null); reset(); }}
+              className="flex items-center justify-center gap-2 w-full py-4 text-white rounded-2xl font-black transition-all hover:-translate-y-1 active:scale-[0.98] shadow-xl shadow-indigo-500/20 bg-gradient-to-br from-indigo-500 to-indigo-600 border border-indigo-400/20"
+            >
+              <Mail className="w-5 h-5" /> إرسال حملة أخرى
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
+  /* ── Compose form ───────────────────────────────────────── */
   return (
-    <div className="max-w-4xl space-y-6 animate-fade-in">
-      <div>
-        <h1 className="font-display text-3xl text-foreground">Email Marketing</h1>
-        <p className="text-sm text-muted-foreground mt-1">Send promotional emails to all active users</p>
+    <div className="space-y-8 max-w-[1500px] w-full text-slate-200" dir="rtl">
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-slate-800">
+        <div>
+          <p className="text-[12px] font-bold uppercase tracking-[0.3em] text-indigo-400 mb-2">Campaigns</p>
+          <h1 className="text-3xl font-black text-black tracking-tight">Email Marketing</h1>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Form */}
-        <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white border border-border rounded-2xl p-6 space-y-5">
-            {/* Subject */}
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-                Email Subject <span className="text-destructive">*</span>
-              </label>
-              <input
-                {...register('subject')}
-                placeholder="e.g. 🎉 Special offer just for you!"
-                className={`w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
-                  errors.subject ? 'border-destructive' : 'border-border focus:ring-primary/30 focus:border-primary'
-                }`}
-              />
-              {errors.subject && <p className="text-xs text-destructive mt-1">⚠ {errors.subject.message}</p>}
-            </div>
+      {/* Main Content Area - Full Width */}
+      <div className="flex flex-col gap-8">
 
-            {/* HTML Body */}
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1.5">
-                Email Body (HTML) <span className="text-destructive">*</span>
-              </label>
-              <textarea
-                {...register('html')}
-                rows={14}
-                placeholder="<h1>Hello!</h1><p>Your email content here...</p>"
-                className={`w-full px-4 py-3 border rounded-xl text-sm font-mono focus:outline-none focus:ring-2 transition-all resize-y ${
-                  errors.html ? 'border-destructive' : 'border-border focus:ring-primary/30 focus:border-primary'
-                }`}
-              />
-              {errors.html && <p className="text-xs text-destructive mt-1">⚠ {errors.html.message}</p>}
-              <p className="text-xs text-muted-foreground mt-1.5">
-                {htmlValue?.length || 0} / 100,000 characters
-              </p>
-            </div>
+        {/* Compose form (Main) */}
+        <div className="w-full">
+          <div className="bg-[#0f172a] rounded-[2rem] border border-slate-800 overflow-hidden shadow-2xl relative">
+            
+            {/* Colored top accent */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-violet-500 to-indigo-500" />
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full flex items-center justify-center gap-2 py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-70"
-            >
-              {isSubmitting ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
-              ) : (
-                <><Send className="w-4 h-4" /> Send Broadcast</>
-              )}
-            </button>
-          </form>
-        </div>
-
-        {/* Sidebar: Templates + Preview */}
-        <div className="space-y-4">
-          {/* Templates */}
-          <div className="bg-white border border-border rounded-2xl p-5">
-            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">Quick Templates</p>
-            <div className="space-y-2">
-              {EMAIL_TEMPLATES.map((t) => (
-                <button
-                  key={t.name}
-                  onClick={() => applyTemplate(t)}
-                  className="w-full text-left px-3 py-2.5 border border-border rounded-xl text-sm hover:border-primary/40 hover:bg-secondary/40 transition-all group"
-                >
-                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">{t.name}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{t.subject}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Info card */}
-          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
-            <div className="flex items-start gap-3">
-              <Users className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+              
+              {/* Subject */}
               <div>
-                <p className="text-sm font-semibold text-blue-800">Background Processing</p>
-                <p className="text-xs text-blue-700 mt-1 leading-relaxed">
-                  Emails are sent in batches of 50 with 2-second delays to prevent SMTP blocking. The API responds immediately — delivery continues in the background.
-                </p>
+                <label className="block text-[12px] font-bold text-slate-300 uppercase tracking-widest mb-3">
+                  عنوان العرض
+                </label>
+                <input
+                  {...register('subject')}
+                  placeholder="اكتب عنوان العرض هنا ....!"
+                  className={`${INPUT_BASE} ${errors.subject ? INPUT_ERR : INPUT_OK}`}
+                />
+                {errors.subject && (
+                  <p className="text-[11px] font-bold text-rose-400 mt-2 px-1">⚠ {errors.subject.message}</p>
+                )}
+              </div>
+
+              {/* HTML Body */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-[12px] font-bold text-slate-300 uppercase tracking-widest">
+                    محتوى العروض
+                  </label>
+                  <span className="text-[11px] font-black text-slate-500 bg-[#020617] px-3 py-1 rounded-lg border border-slate-700 tracking-widest">
+                    {htmlValue?.length || 0} / 100,000
+                  </span>
+                </div>
+                <textarea
+                  {...register('html')}
+                  rows={16}
+                  dir="ltr"
+                  placeholder="العروض اللتي تريد ارسالها ....!"
+                  className={`${INPUT_BASE} font-mono resize-y ${errors.html ? INPUT_ERR : INPUT_OK}`}
+                />
+                {errors.html && (
+                  <p className="text-[11px] font-bold text-rose-400 mt-2 px-1">⚠ {errors.html.message}</p>
+                )}
+              </div>
+
+              {/* Submit */}
+              <div className="pt-4 border-t border-slate-800/60 mt-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 py-4 text-white rounded-2xl font-black transition-all disabled:opacity-70 hover:-translate-y-1 active:scale-[0.98] shadow-xl shadow-indigo-500/20 bg-gradient-to-br from-indigo-500 to-indigo-600 border border-indigo-400/20"
+                >
+                  {isSubmitting ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Sending to queue ...</>
+                  ) : (
+                    <><Send className="w-5 h-5" /> Send</>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Live Preview (Full Width Below Form) */}
+        {htmlValue && (
+          <div className="w-full">
+            <div className="bg-[#0f172a] rounded-[2rem] border border-slate-800 overflow-hidden shadow-2xl">
+              <div className="px-8 py-5 border-b border-slate-800 flex items-center justify-between bg-[#1e293b]">
+                <p className="text-[12px] font-black text-white uppercase tracking-widest">Live Preview</p>
+              </div>
+              
+              {/* Preview Container - Forced Light Mode to simulate email client */}
+              <div className="bg-white p-8 overflow-y-auto custom-scrollbar flex justify-center">
+                <div
+                  className="text-sm text-black w-full max-w-2xl"
+                  dangerouslySetInnerHTML={{ __html: htmlValue }}
+                  dir="ltr"
+                />
               </div>
             </div>
           </div>
+        )}
 
-          {/* Preview */}
-          {htmlValue && (
-            <div className="bg-white border border-border rounded-2xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-                <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Live Preview</p>
-                <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">Approximate</span>
-              </div>
-              <div
-                className="p-4 max-h-64 overflow-y-auto text-xs"
-                dangerouslySetInnerHTML={{ __html: htmlValue }}
-              />
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

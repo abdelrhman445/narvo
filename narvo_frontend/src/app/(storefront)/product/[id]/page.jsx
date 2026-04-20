@@ -7,7 +7,7 @@ import { ShoppingCart, Check, ArrowLeft, Minus, Plus, Loader2, Package } from 'l
 import { toast } from 'sonner';
 import api from '@/lib/axios';
 import useCartStore from '@/store/cartStore';
-import { formatPrice, getProductImage } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -42,7 +42,7 @@ export default function ProductPage() {
     if (!product || product.stock === 0) return;
     setAdding(true);
     addItem(product, quantity);
-    toast.success('Added to cart!', { description: product.title, duration: 2000 });
+    toast.success('تمت الإضافة للسلة!', { description: product.title, duration: 2000 });
     setTimeout(() => setAdding(false), 1500);
   };
 
@@ -54,7 +54,7 @@ export default function ProductPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
       </div>
     );
   }
@@ -62,31 +62,31 @@ export default function ProductPage() {
   if (error || !product) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h2 className="font-display text-3xl mb-4">Product not found</h2>
-        <button onClick={() => router.push('/')} className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-medium">
-          Back to Shop
+        <h2 className="font-display text-3xl mb-4 text-gray-900">المنتج غير متوفر</h2>
+        <button onClick={() => router.push('/')} className="px-5 py-2.5 bg-zinc-900 text-white rounded-xl text-sm font-medium hover:bg-zinc-800 transition-colors">
+          العودة للمتجر
         </button>
       </div>
     );
   }
 
-  const images = product.images?.length ? product.images : ['/placeholder-product.jpg'];
+  const images = product.images?.length ? product.images : ['https://placehold.co/600x600/eeeeee/999999?text=No+Image'];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Back */}
+      {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 group"
+        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-8 group w-fit"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Back to Shop
+        العودة للمتجر
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-fade-in">
-        {/* Images */}
+        {/* Images Section */}
         <div className="space-y-4">
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-secondary border border-border">
+          <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
             <Image
               src={images[selectedImage]}
               alt={product.title}
@@ -96,7 +96,7 @@ export default function ProductPage() {
               priority
             />
             {discountPercent && (
-              <span className="absolute top-4 left-4 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
+              <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
                 -{discountPercent}%
               </span>
             )}
@@ -104,74 +104,74 @@ export default function ProductPage() {
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                    selectedImage === i ? 'border-primary' : 'border-border hover:border-primary/40'
+                  className={`relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
+                    selectedImage === i ? 'border-zinc-900 shadow-md scale-95' : 'border-gray-200 hover:border-gray-400'
                   }`}
                 >
-                  <Image src={img} alt="" fill className="object-cover" />
+                  <Image src={img} alt={`Thumbnail ${i + 1}`} fill className="object-cover" />
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Info */}
-        <div className="flex flex-col">
-          <h1 className="font-display text-4xl text-foreground leading-tight mb-4">
+        {/* Product Info Section */}
+        <div className="flex flex-col" dir="auto">
+          <h1 className="font-display text-4xl text-gray-900 font-bold leading-tight mb-4">
             {product.title}
           </h1>
 
           {/* Price */}
           <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-3xl font-semibold text-foreground">
+            <span className="text-3xl font-bold text-gray-900">
               {formatPrice(product.price)}
             </span>
             {product.oldPrice && (
-              <span className="text-xl text-muted-foreground line-through">
+              <span className="text-xl text-gray-400 line-through font-medium">
                 {formatPrice(product.oldPrice)}
               </span>
             )}
           </div>
 
-          {/* Stock */}
-          <div className="flex items-center gap-2 mb-6">
-            <Package className="w-4 h-4 text-muted-foreground" />
+          {/* Stock Status */}
+          <div className="flex items-center gap-2 mb-6 bg-gray-50 w-fit px-3 py-1.5 rounded-lg border border-gray-200">
+            <Package className="w-4 h-4 text-gray-500" />
             {product.stock > 0 ? (
-              <span className="text-sm text-emerald-600 font-medium">
-                {product.stock} in stock
+              <span className="text-sm text-emerald-600 font-semibold">
+                متوفر ({product.stock} قطع)
               </span>
             ) : (
-              <span className="text-sm text-destructive font-medium">Out of stock</span>
+              <span className="text-sm text-red-600 font-semibold">نفذت الكمية</span>
             )}
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
+          <p className="text-gray-600 leading-relaxed mb-8 flex-1 text-lg">
             {product.description}
           </p>
 
-          {/* Quantity + Add to Cart */}
+          {/* Quantity & Add to Cart Controls */}
           {product.stock > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-muted-foreground w-20">Quantity</span>
-                <div className="flex items-center border border-border rounded-xl overflow-hidden">
+            <div className="space-y-5 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-sm font-semibold text-gray-700">الكمية</span>
+                <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-10 h-10 flex items-center justify-center hover:bg-secondary transition-colors"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-600 active:bg-gray-200"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="w-12 text-center font-medium">{quantity}</span>
+                  <span className="w-14 text-center font-bold text-lg text-gray-900">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => Math.min(product.stock - cartQty, q + 1))}
                     disabled={quantity >= product.stock - cartQty}
-                    className="w-10 h-10 flex items-center justify-center hover:bg-secondary transition-colors disabled:opacity-40"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:hover:bg-white text-gray-600 active:bg-gray-200"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -180,29 +180,30 @@ export default function ProductPage() {
 
               <button
                 onClick={handleAddToCart}
-                className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-base font-semibold transition-all active:scale-95 ${
+                disabled={adding || product.stock === 0}
+                className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl text-lg font-bold transition-all duration-300 active:scale-[0.98] shadow-sm ${
                   adding
-                    ? 'bg-emerald-500 text-white'
+                    ? 'bg-emerald-500 text-white shadow-emerald-500/30'
                     : inCart
-                    ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200'
-                    : 'bg-primary text-white hover:bg-primary/90 animate-pulse-glow'
+                    ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200 hover:bg-emerald-100'
+                    : 'bg-zinc-900 text-white hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-900/20'
                 }`}
               >
                 {adding ? (
-                  <><Check className="w-5 h-5" /> Added to Cart!</>
+                  <><Check className="w-6 h-6" /> تمت الإضافة!</>
                 ) : inCart ? (
-                  <><Check className="w-5 h-5" /> In Cart ({cartQty})</>
+                  <><Check className="w-6 h-6" /> متواجد في السلة ({cartQty})</>
                 ) : (
-                  <><ShoppingCart className="w-5 h-5" /> Add to Cart</>
+                  <><ShoppingCart className="w-6 h-6" /> أضف إلى السلة</>
                 )}
               </button>
 
               {inCart && (
                 <button
                   onClick={() => router.push('/cart')}
-                  className="w-full py-3 rounded-xl border border-border text-sm font-medium hover:border-primary/40 transition-colors"
+                  className="w-full py-3 rounded-xl border-2 border-gray-200 text-gray-700 text-sm font-bold hover:border-zinc-900 hover:text-zinc-900 transition-colors bg-white"
                 >
-                  View Cart →
+                  الذهاب إلى الدفع ←
                 </button>
               )}
             </div>

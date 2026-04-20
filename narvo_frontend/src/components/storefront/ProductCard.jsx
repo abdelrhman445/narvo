@@ -21,7 +21,7 @@ export default function ProductCard({ product }) {
 
     setAdding(true);
     addItem(product, 1);
-    toast.success(`Added to cart`, {
+    toast.success(`تمت الإضافة للسلة`, {
       description: product.title,
       duration: 2000,
     });
@@ -37,56 +37,58 @@ export default function ProductCard({ product }) {
   const image = getProductImage(product.images);
 
   return (
-    <Link href={`/product/${product._id}`} className="block group">
-      <article className="product-card bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30">
+    <Link href={`/product/${product._id}`} className="block group" dir="rtl">
+      <article className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
         {/* Image container */}
-        <div className="relative aspect-square bg-secondary overflow-hidden">
+        <div className="relative aspect-square bg-gray-50 overflow-hidden">
           <Image
             src={image}
             alt={product.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
 
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
             {discountPercent && (
-              <span className="bg-primary text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm">
                 -{discountPercent}%
               </span>
             )}
             {product.stock === 0 && (
-              <span className="bg-foreground/80 text-background text-[11px] font-medium px-2 py-0.5 rounded-full">
-                Out of stock
+              <span className="bg-zinc-900/90 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                نفذت الكمية
               </span>
             )}
           </div>
 
           {/* Quick view overlay */}
-          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300 flex items-center justify-center">
-            <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-foreground text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-              <Eye className="w-3.5 h-3.5" /> Quick view
+          <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <span className="translate-y-4 group-hover:translate-y-0 transition-all duration-300 flex items-center gap-2 bg-white/95 backdrop-blur-md text-zinc-900 text-sm font-bold px-4 py-2 rounded-full shadow-lg">
+              <Eye className="w-4 h-4" /> نظرة سريعة
             </span>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-4">
-          <h3 className="font-body font-medium text-foreground text-sm leading-snug line-clamp-2 mb-3 group-hover:text-primary transition-colors">
-            {product.title}
-          </h3>
+        <div className="p-5 flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2 mb-3 group-hover:text-zinc-600 transition-colors">
+              {product.title}
+            </h3>
 
-          {/* Pricing */}
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-base font-semibold text-foreground">
-              {formatPrice(product.price)}
-            </span>
-            {product.oldPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                {formatPrice(product.oldPrice)}
+            {/* Pricing */}
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-xl font-black text-zinc-900">
+                {formatPrice(product.price)}
               </span>
-            )}
+              {product.oldPrice && (
+                <span className="text-sm font-medium text-gray-400 line-through">
+                  {formatPrice(product.oldPrice)}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Add to cart */}
@@ -94,27 +96,29 @@ export default function ProductCard({ product }) {
             onClick={handleAddToCart}
             disabled={product.stock === 0}
             className={cn(
-              'w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
+              'w-full flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm',
               product.stock === 0
-                ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                : adding
+                ? 'bg-emerald-500 text-white shadow-emerald-500/30'
                 : inCart
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
-                : 'bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95'
+                ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200 hover:bg-emerald-100'
+                : 'bg-zinc-900 text-white hover:bg-zinc-800 hover:shadow-lg hover:shadow-zinc-900/20 active:scale-[0.98]'
             )}
           >
             {product.stock === 0 ? (
-              'Out of Stock'
+              'نفذت الكمية'
             ) : adding ? (
               <>
-                <Check className="w-4 h-4" /> Added!
+                <Check className="w-5 h-5" /> تمت الإضافة!
               </>
             ) : inCart ? (
               <>
-                <Check className="w-4 h-4" /> In Cart
+                <Check className="w-5 h-5" /> في السلة
               </>
             ) : (
               <>
-                <ShoppingCart className="w-4 h-4" /> Add to Cart
+                <ShoppingCart className="w-5 h-5" /> أضف للسلة
               </>
             )}
           </button>

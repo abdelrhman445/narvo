@@ -29,9 +29,12 @@ const dmMono = DM_Mono({
 });
 
 export const metadata = {
-  title: { default: 'Bazaar — Modern E-Commerce', template: '%s | Bazaar' },
-  description: 'Discover unique products at great prices.',
-  icons: { icon: '/favicon.ico' },
+  title: 'Narvo Store',
+  description: 'Your favorite store',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png', 
+  },
 };
 
 export default function RootLayout({ children }) {
