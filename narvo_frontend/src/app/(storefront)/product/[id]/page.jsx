@@ -53,17 +53,17 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+      <div className="flex items-center justify-center min-h-[60vh] transition-colors duration-300">
+        <Loader2 className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
 
   if (error || !product) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h2 className="font-display text-3xl mb-4 text-gray-900">المنتج غير متوفر</h2>
-        <button onClick={() => router.push('/')} className="px-5 py-2.5 bg-zinc-900 text-white rounded-xl text-sm font-medium hover:bg-zinc-800 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center transition-colors">
+        <h2 className="font-display text-3xl mb-4 text-foreground">المنتج غير متوفر</h2>
+        <button onClick={() => router.push('/')} className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-colors">
           العودة للمتجر
         </button>
       </div>
@@ -73,11 +73,11 @@ export default function ProductPage() {
   const images = product.images?.length ? product.images : ['https://placehold.co/600x600/eeeeee/999999?text=No+Image'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 transition-colors duration-300" dir="rtl">
       {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors mb-8 group w-fit"
+        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 group w-fit"
       >
         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         العودة للمتجر
@@ -86,7 +86,7 @@ export default function ProductPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-fade-in">
         {/* Images Section */}
         <div className="space-y-4">
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
+          <div className="relative aspect-square rounded-3xl overflow-hidden bg-secondary border border-border shadow-sm transition-colors">
             <Image
               src={images[selectedImage]}
               alt={product.title}
@@ -96,10 +96,10 @@ export default function ProductPage() {
               priority
             />
             {discountPercent && (
-              <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
-                -{discountPercent}%
-              </span>
-            )}
+  <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md z-10">
+    -{discountPercent}%
+  </span>
+)}
           </div>
 
           {/* Thumbnails */}
@@ -109,8 +109,10 @@ export default function ProductPage() {
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                    selectedImage === i ? 'border-zinc-900 shadow-md scale-95' : 'border-gray-200 hover:border-gray-400'
+                  className={`relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${
+                    selectedImage === i 
+                    ? 'border-primary shadow-md scale-95' 
+                    : 'border-border hover:border-muted-foreground'
                   }`}
                 >
                   <Image src={img} alt={`Thumbnail ${i + 1}`} fill className="object-cover" />
@@ -122,56 +124,56 @@ export default function ProductPage() {
 
         {/* Product Info Section */}
         <div className="flex flex-col" dir="auto">
-          <h1 className="font-display text-4xl text-gray-900 font-bold leading-tight mb-4">
+          <h1 className="font-display text-4xl text-foreground font-bold leading-tight mb-4 transition-colors">
             {product.title}
           </h1>
 
           {/* Price */}
-          <div className="flex items-baseline gap-3 mb-6">
-            <span className="text-3xl font-bold text-gray-900">
+          <div className="flex items-baseline gap-3 mb-6 transition-colors">
+            <span className="text-3xl font-bold text-foreground transition-colors">
               {formatPrice(product.price)}
             </span>
             {product.oldPrice && (
-              <span className="text-xl text-gray-400 line-through font-medium">
+              <span className="text-xl text-muted-foreground line-through font-medium transition-colors">
                 {formatPrice(product.oldPrice)}
               </span>
             )}
           </div>
 
           {/* Stock Status */}
-          <div className="flex items-center gap-2 mb-6 bg-gray-50 w-fit px-3 py-1.5 rounded-lg border border-gray-200">
-            <Package className="w-4 h-4 text-gray-500" />
+          <div className="flex items-center gap-2 mb-6 bg-secondary px-3 py-1.5 rounded-lg border border-border transition-colors w-fit">
+            <Package className="w-4 h-4 text-muted-foreground" />
             {product.stock > 0 ? (
-              <span className="text-sm text-emerald-600 font-semibold">
+              <span className="text-sm text-emerald-600 dark:text-emerald-400 font-semibold transition-colors">
                 متوفر ({product.stock} قطع)
               </span>
             ) : (
-              <span className="text-sm text-red-600 font-semibold">نفذت الكمية</span>
+              <span className="text-sm text-destructive font-semibold transition-colors">نفذت الكمية</span>
             )}
           </div>
 
           {/* Description */}
-          <p className="text-gray-600 leading-relaxed mb-8 flex-1 text-lg">
+          <p className="text-muted-foreground leading-relaxed mb-8 flex-1 text-lg transition-colors">
             {product.description}
           </p>
 
           {/* Quantity & Add to Cart Controls */}
           {product.stock > 0 && (
-            <div className="space-y-5 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+            <div className="space-y-5 bg-card p-6 rounded-[2rem] border border-border shadow-sm transition-colors">
               <div className="flex items-center justify-between gap-4">
-                <span className="text-sm font-semibold text-gray-700">الكمية</span>
-                <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
+                <span className="text-sm font-semibold text-muted-foreground transition-colors">الكمية</span>
+                <div className="flex items-center border-2 border-border rounded-2xl overflow-hidden bg-background transition-colors">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-600 active:bg-gray-200"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-secondary transition-colors text-muted-foreground active:bg-border"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="w-14 text-center font-bold text-lg text-gray-900">{quantity}</span>
+                  <span className="w-14 text-center font-bold text-lg text-foreground transition-colors">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => Math.min(product.stock - cartQty, q + 1))}
                     disabled={quantity >= product.stock - cartQty}
-                    className="w-12 h-12 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:hover:bg-white text-gray-600 active:bg-gray-200"
+                    className="w-12 h-12 flex items-center justify-center hover:bg-secondary transition-colors disabled:opacity-20 text-muted-foreground active:bg-border"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -181,12 +183,12 @@ export default function ProductPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={adding || product.stock === 0}
-                className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl text-lg font-bold transition-all duration-300 active:scale-[0.98] shadow-sm ${
+                className={`w-full flex items-center justify-center gap-2 py-5 rounded-2xl text-lg font-bold transition-all duration-300 active:scale-[0.98] shadow-sm ${
                   adding
-                    ? 'bg-emerald-500 text-white shadow-emerald-500/30'
+                    ? 'bg-emerald-500 text-white shadow-emerald-500/30 border-emerald-500'
                     : inCart
-                    ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200 hover:bg-emerald-100'
-                    : 'bg-zinc-900 text-white hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-900/20'
+                    ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-100'
+                    : 'bg-primary text-primary-foreground hover:opacity-90 shadow-xl shadow-primary/10'
                 }`}
               >
                 {adding ? (
@@ -201,7 +203,7 @@ export default function ProductPage() {
               {inCart && (
                 <button
                   onClick={() => router.push('/cart')}
-                  className="w-full py-3 rounded-xl border-2 border-gray-200 text-gray-700 text-sm font-bold hover:border-zinc-900 hover:text-zinc-900 transition-colors bg-white"
+                  className="w-full py-4 rounded-2xl border-2 border-border text-foreground text-sm font-bold hover:border-primary transition-all bg-background active:scale-[0.98]"
                 >
                   الذهاب إلى الدفع ←
                 </button>
