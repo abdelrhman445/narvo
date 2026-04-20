@@ -6,9 +6,12 @@ const productRoutes = require('./productRoutes');
 const orderRoutes = require('./orderRoutes');
 const adminRoutes = require('./adminRoutes');
 const categoryRoutes = require('./categoryRoutes');
+
+// ✅ استدعاء الكنترولر عشان الراوتس العامة (Public)
+const categoryController = require('../controllers/categoryController');
+
 const { adminLogin } = require('../controllers/authController');
 const { adminLoginLimiter } = require('../middlewares/rateLimiter');
-
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 router.get('/health', (req, res) => {
@@ -22,18 +25,21 @@ router.get('/health', (req, res) => {
 
 // ─── Public Routes ────────────────────────────────────────────────────────────
 router.use('/auth', authRoutes);
-router.use('/products', productRoutes);
+router.use('/products', productRoutes); // ✅ ده لوحده كفاية للمنتجات لأنه جواه الـ GET
 router.use('/orders', orderRoutes);
 
+// ✅ مسار جلب الفئات للجمهور (عشان يظهر في الـ Navbar)
+router.get('/categories', categoryController.getCategories);
+
 // ─── Hidden Admin Login Route ─────────────────────────────────────────────────
-// Obfuscated path: not discoverable from public API docs
-// Strict rate limiting: 5 attempts per 15 minutes
 router.post('/management-portal-x1/login', adminLoginLimiter, adminLogin);
 
 // ─── Admin Panel Routes ───────────────────────────────────────────────────────
 router.use('/admin', adminRoutes);
 
+// ✅ مسارات إدارة الفئات (للأدمن فقط)
 router.use('/admin/categories', categoryRoutes);
+
 // ─── 404 Catch-all ───────────────────────────────────────────────────────────
 router.use('*', (req, res) => {
   res.status(404).json({
