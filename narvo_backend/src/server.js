@@ -66,7 +66,7 @@ app.use(
 // 2. CORS — restrict to your frontend origin in production
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
-  : ['http://localhost:3000'];
+  : ['http://localhost:3000', 'https://narvo-frontend.vercel.app'];
 
 app.use(
   cors({
