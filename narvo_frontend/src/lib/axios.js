@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getSession } from 'next-auth/react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -10,10 +11,19 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-// Attach user token from sessionStorage (set after Google OAuth)
-api.interceptors.request.use((config) => {
+// ✅ تعديل: جلب التوكن من sessionStorage أو من جلسة NextAuth مباشرة
+api.interceptors.request.use(async (config) => {
   if (typeof window !== 'undefined') {
-    const token = sessionStorage.getItem('userToken');
+    // 1. البحث في sessionStorage أولاً
+    let token = sessionStorage.getItem('userToken');
+
+    // 2. إذا لم يكن موجوداً، نجلبه من جلسة NextAuth
+    if (!token) {
+      const session = await getSession();
+      // يتم سحب التوكن حسب المسمى الذي حفظته به في إعدادات NextAuth
+      token = session?.accessToken || session?.user?.token || session?.token;
+    }
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
