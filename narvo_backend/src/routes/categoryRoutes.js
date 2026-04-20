@@ -6,4 +6,8 @@ const categoryCtrl = require('../controllers/categoryController');
 router.post('/', categoryCtrl.createCategory); // للإضافة
 router.get('/', categoryCtrl.getCategories);   // للجلب
 
+// ضيف دول لو مش موجودين 👇
+router.put('/:id', categoryCtrl.updateCategory); 
+router.delete('/:id', categoryCtrl.deleteCategory);
+
 module.exports = router;
