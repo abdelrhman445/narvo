@@ -7,6 +7,7 @@ export const api = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 15000,
+  withCredentials: true,
 });
 
 // Attach user token from sessionStorage (set after Google OAuth)
