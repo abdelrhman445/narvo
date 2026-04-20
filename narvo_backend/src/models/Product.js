@@ -15,6 +15,11 @@ const productSchema = new mongoose.Schema(
       trim: true,
       maxlength: [5000, 'Description cannot exceed 5000 characters'],
     },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category', 
+      required: [true, 'المنتج يجب أن ينتمي لفئة معينة']
+    },
     images: {
       type: [String],
       validate: {

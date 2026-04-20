@@ -5,8 +5,10 @@ const authRoutes = require('./authRoutes');
 const productRoutes = require('./productRoutes');
 const orderRoutes = require('./orderRoutes');
 const adminRoutes = require('./adminRoutes');
+const categoryRoutes = require('./categoryRoutes');
 const { adminLogin } = require('../controllers/authController');
 const { adminLoginLimiter } = require('../middlewares/rateLimiter');
+
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 router.get('/health', (req, res) => {
@@ -31,6 +33,7 @@ router.post('/management-portal-x1/login', adminLoginLimiter, adminLogin);
 // ─── Admin Panel Routes ───────────────────────────────────────────────────────
 router.use('/admin', adminRoutes);
 
+router.use('/admin/categories', categoryRoutes);
 // ─── 404 Catch-all ───────────────────────────────────────────────────────────
 router.use('*', (req, res) => {
   res.status(404).json({

@@ -11,6 +11,7 @@ const sanitizeMiddleware = require('./middlewares/sanitize');
 const { errorHandler } = require('./middlewares/errorHandler');
 const routes = require('./routes/index');
 
+
 // ─── Validate Required Env Variables ─────────────────────────────────────────
 const REQUIRED_ENV = [
   'MONGO_URI',
