@@ -11,7 +11,7 @@ const createProductSchema = z.object({
   description: z.string().min(10, 'Description must be at least 10 characters').max(5000),
   category: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid Category ID'),
   images: z
-    .array(z.string().url('Each image must be a valid URL'))
+    .array(z.string()) 
     .min(1, 'At least one image is required')
     .max(10, 'Maximum 10 images allowed'),
   price: z.number({ invalid_type_error: 'Price must be a number' }).positive('Price must be positive'),
