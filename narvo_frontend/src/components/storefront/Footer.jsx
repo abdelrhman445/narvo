@@ -31,7 +31,7 @@ export default function Footer() {
         {/* Links Section */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 pb-12 border-b border-gray-50 relative">
           
-          {/* Navigation - تم تعديل "تواصل معنا" للواتساب */}
+          {/* Navigation */}
           <nav className="flex flex-wrap justify-center gap-8 md:gap-12">
             <Link href="/" className="text-sm font-black text-gray-500 hover:text-zinc-900 transition-colors uppercase tracking-widest">
               المتجر
@@ -39,7 +39,12 @@ export default function Footer() {
             <Link href="/cart" className="text-sm font-black text-gray-500 hover:text-zinc-900 transition-colors uppercase tracking-widest">
               السلة
             </Link>
-            {/* رابط الواتساب بالرقم المختار */}
+            
+            {/* ✅ الرابط الجديد: كل الأقسام */}
+            <Link href="/category" className="text-sm font-black text-gray-500 hover:text-zinc-900 transition-colors uppercase tracking-widest">
+              كل الأقسام
+            </Link>
+
             <a 
               href="https://wa.me/201065235834" 
               target="_blank" 
@@ -49,16 +54,14 @@ export default function Footer() {
               تواصل معنا
             </a>
           </nav>
-
-          
         </div>
 
         {/* Bottom Bar */}
-<div className="pt-8 flex flex-col items-center justify-center gap-4">
-  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] text-center">
-    © {new Date().getFullYear()} Narvo. جميع الحقوق محفوظة.
-  </p>
-</div>
+        <div className="pt-8 flex flex-col items-center justify-center gap-4">
+          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] text-center">
+            © {new Date().getFullYear()} Narvo. جميع الحقوق محفوظة.
+          </p>
+        </div>
 
       </div>
     </footer>

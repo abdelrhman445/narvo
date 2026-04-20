@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { 
   Plus, Pencil, Trash2, Loader2, Search, 
-  ToggleLeft, ToggleRight, Package, ImagePlus, AlertCircle, X 
+  ToggleLeft, ToggleRight, Package, ImagePlus, AlertCircle, X, Layers 
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,9 +13,11 @@ import { adminApi } from '@/lib/axios';
 import { formatPrice, formatDate } from '@/lib/utils';
 import Image from 'next/image';
 
+// ✅ تحديث السكيما لإضافة الفئة
 const productSchema = z.object({
   title: z.string().min(2, 'الاسم قصير جداً').max(200),
   description: z.string().min(10, 'الوصف قصير جداً').max(5000),
+  category: z.string().min(1, 'يجب اختيار فئة للمنتج'), // حقل الفئة الجديد
   images: z.any(),
   price: z.coerce.number().positive('السعر يجب أن يكون أكبر من الصفر'),
   oldPrice: z.coerce.number().positive().optional().or(z.literal('')),
@@ -45,6 +47,7 @@ const INPUT_ERR = 'border-rose-500/50 focus:border-rose-500 focus:ring-rose-500/
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]); // حالة الفئات
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
@@ -60,6 +63,16 @@ export default function AdminProductsPage() {
     resolver: zodResolver(productSchema),
   });
 
+  // ✅ جلب الفئات من السيرفر
+  const fetchCategories = async () => {
+    try {
+      const { data } = await adminApi.get('/admin/categories');
+      setCategories(data);
+    } catch (err) {
+      console.error("Failed to load categories", err);
+    }
+  };
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
@@ -73,13 +86,16 @@ export default function AdminProductsPage() {
     }
   }, [page]);
 
-  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+  useEffect(() => { 
+    fetchProducts(); 
+    fetchCategories(); // جلب الفئات عند التحميل
+  }, [fetchProducts]);
 
   const openCreate = () => {
     setEditProduct(null);
     setImageFiles([]);
     setPreviews([]);
-    reset({ title: '', description: '', images: '', price: '', oldPrice: '', stock: 0, isActive: true });
+    reset({ title: '', description: '', category: '', images: '', price: '', oldPrice: '', stock: 0, isActive: true });
     setModalOpen(true);
   };
 
@@ -90,6 +106,7 @@ export default function AdminProductsPage() {
     reset({
       title: product.title,
       description: product.description,
+      category: product.category?._id || product.category || '', // تعبئة الفئة المختارة
       images: product.images ? product.images.join('\n') : '',
       price: product.price,
       oldPrice: product.oldPrice || '',
@@ -99,13 +116,10 @@ export default function AdminProductsPage() {
     setModalOpen(true);
   };
 
-  // ✅ التعديل الجذري لحل مشكلة الـ Validation Error
   const onSubmit = async (data) => {
     setSaving(true);
     try {
       let finalImages = [];
-
-      // 1. تحويل الملفات المرفوعة إلى Base64 للحفاظ على نوع البيانات كـ JSON
       if (data.images instanceof FileList && data.images.length > 0) {
         const filePromises = Array.from(data.images).map((file) => {
           return new Promise((resolve, reject) => {
@@ -117,20 +131,18 @@ export default function AdminProductsPage() {
         });
         finalImages = await Promise.all(filePromises);
       } 
-      // 2. في حالة التعديل وعدم رفع صور جديدة (تكون الصور عبارة عن روابط نصية)
       else if (typeof data.images === 'string' && data.images.trim() !== '') {
         finalImages = data.images.split('\n').map((u) => u.trim()).filter(Boolean);
       } 
-      // 3. كحل بديل للحفاظ على الصور القديمة
       else if (previews.length > 0) {
         finalImages = previews;
       }
 
-      // 4. تجهيز الـ Payload كـ JSON صريح للحفاظ على الأرقام
       const payload = {
         title: data.title,
         description: data.description,
-        price: Number(data.price), // ضمان إرسال الرقم كـ Number وليس String
+        category: data.category, // إرسال الفئة للسيرفر
+        price: Number(data.price),
         stock: Number(data.stock),
         isActive: Boolean(data.isActive),
         images: finalImages,
@@ -140,7 +152,6 @@ export default function AdminProductsPage() {
         payload.oldPrice = Number(data.oldPrice);
       }
 
-      // 5. إرسال الطلب
       if (editProduct) {
         await adminApi.put(`/admin/products/${editProduct._id}`, payload);
         toast.success('تم تحديث بيانات المنتج بنجاح');
@@ -152,10 +163,8 @@ export default function AdminProductsPage() {
       setModalOpen(false);
       fetchProducts();
     } catch (err) {
-      // طباعة الخطأ القادم من السيرفر بوضوح
       const errorMsg = err.response?.data?.message || err.response?.data?.error || 'حدث خطأ أثناء الحفظ';
       toast.error('فشل في العملية', { description: errorMsg });
-      console.error('Validation Error Details:', err.response?.data);
     } finally {
       setSaving(false);
     }
@@ -183,7 +192,7 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-slate-800">
         <div>
           <p className="text-[12px] font-bold uppercase tracking-[0.3em] text-indigo-400 mb-2">إدارة المنتجات</p>
-          <h1 className="text-3xl font-black text-[#000000] tracking-tight">المنتجات</h1>
+          <h1 className="text-3xl font-black text-black tracking-tight">المنتجات</h1>
         </div>
         <button
           onClick={openCreate}
@@ -193,7 +202,6 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      {/* Main Container - Solid Background */}
       <div className="bg-[#0f172a] rounded-[2rem] border border-slate-800 overflow-hidden shadow-2xl">
         
         {/* Search Bar */}
@@ -218,7 +226,7 @@ export default function AdminProductsPage() {
           <table className="w-full text-right">
             <thead>
               <tr className="bg-[#1e293b] border-b border-slate-700/50">
-                {['المنتج', 'السعر', 'المخزون', 'الحالة', 'تاريخ الإضافة', 'إجراءات'].map((h, i) => (
+                {['المنتج', 'الفئة', 'السعر', 'المخزون', 'الحالة', 'تاريخ الإضافة', 'إجراءات'].map((h, i) => (
                   <th key={i} className="px-8 py-5 text-[12px] font-black text-slate-300 uppercase tracking-widest">
                     {h}
                   </th>
@@ -228,14 +236,14 @@ export default function AdminProductsPage() {
             <tbody className="divide-y divide-slate-800">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-24">
+                  <td colSpan={7} className="text-center py-24">
                     <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mx-auto mb-4" />
                     <p className="text-[12px] font-bold text-slate-400 uppercase tracking-widest">جاري تحميل البيانات...</p>
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-24">
+                  <td colSpan={7} className="text-center py-24">
                     <div className="w-16 h-16 bg-[#020617] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-700">
                       <Package className="w-8 h-8 text-slate-500" />
                     </div>
@@ -255,10 +263,17 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-bold text-white truncate max-w-[250px] group-hover:text-indigo-400 transition-colors">{p.title}</p>
+                          <p className="text-sm font-bold text-white truncate max-w-[200px] group-hover:text-indigo-400 transition-colors">{p.title}</p>
                           <p className="text-[11px] text-slate-400 font-mono tracking-widest mt-1.5 uppercase">#{p._id.slice(-8)}</p>
                         </div>
                       </div>
+                    </td>
+
+                    {/* ✅ عرض اسم الفئة في الجدول */}
+                    <td className="px-8 py-5">
+                      <span className="text-[11px] font-bold text-indigo-300 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20 uppercase tracking-widest">
+                        {p.category?.name || 'عام'}
+                      </span>
                     </td>
 
                     <td className="px-8 py-5">
@@ -379,10 +394,31 @@ export default function AdminProductsPage() {
                 />
               </Field>
 
+              {/* ✅ حقل اختيار الفئة الجديد */}
+              <Field label="تصنيف المنتج" error={errors.category}>
+                <div className="relative group">
+                   <Layers className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors pointer-events-none" />
+                   <select
+                    {...register('category')}
+                    className={`${INPUT_BASE} pr-11 appearance-none cursor-pointer ${errors.category ? INPUT_ERR : INPUT_OK}`}
+                   >
+                    <option value="" className="bg-[#0f172a]">اختر فئة للمنتج...</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat._id} className="bg-[#0f172a]">
+                        {cat.name}
+                      </option>
+                    ))}
+                   </select>
+                   <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <div className="border-l border-t border-slate-500 w-2 h-2 -rotate-45" />
+                   </div>
+                </div>
+              </Field>
+
               <Field label="وصف المنتج" error={errors.description}>
                 <textarea
                   {...register('description')}
-                  rows={4}
+                  rows={3}
                   placeholder="اكتب وصفاً جذاباً وتفصيلياً للمنتج..."
                   className={`${INPUT_BASE} resize-none ${errors.description ? INPUT_ERR : INPUT_OK}`}
                 />
@@ -404,20 +440,18 @@ export default function AdminProductsPage() {
                       }}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     />
-                    <div className={`${INPUT_BASE} ${errors.images ? INPUT_ERR : INPUT_OK} flex flex-col items-center justify-center py-12 border-dashed border-2 bg-[#020617] group-hover:bg-slate-900 group-hover:border-indigo-500/60 transition-all`}>
-                      <div className="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-indigo-500/50 transition-all shadow-lg">
-                        <ImagePlus className="w-7 h-7 text-slate-300 group-hover:text-indigo-400 transition-colors" />
+                    <div className={`${INPUT_BASE} ${errors.images ? INPUT_ERR : INPUT_OK} flex flex-col items-center justify-center py-10 border-dashed border-2 bg-[#020617] group-hover:bg-slate-900 group-hover:border-indigo-500/60 transition-all`}>
+                      <div className="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-indigo-500/50 transition-all shadow-lg">
+                        <ImagePlus className="w-6 h-6 text-slate-300 group-hover:text-indigo-400 transition-colors" />
                       </div>
-                      <p className="text-sm font-bold text-white">اضغط أو اسحب لرفع صور المنتج</p>
-                      <p className="text-[10px] text-slate-500 mt-2 uppercase tracking-[0.2em] font-mono">PNG, JPG, WEBP</p>
+                      <p className="text-xs font-bold text-white">اضغط لرفع صور المنتج</p>
                     </div>
                   </div>
 
                   {previews.length > 0 && (
                     <div className="flex flex-wrap gap-4 pt-2">
                       {previews.map((src, idx) => (
-                        <div key={idx} className="relative w-20 h-20 rounded-2xl border border-slate-600 overflow-hidden bg-[#020617] shadow-xl shadow-black/40">
-                          {/* استخدام img العادية لمنع أخطاء next/image عند التعديل وعرض صور خارجية غير معرفة */}
+                        <div key={idx} className="relative w-16 h-16 rounded-xl border border-slate-600 overflow-hidden bg-[#020617]">
                           <img src={src} alt="preview" className="object-cover w-full h-full" />
                         </div>
                       ))}
@@ -427,28 +461,28 @@ export default function AdminProductsPage() {
               </Field>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <Field label="السعر الأساسي (ج.م)" error={errors.price}>
+                <Field label="السعر الأساسي" error={errors.price}>
                   <input
                     {...register('price')}
-                    type="number" step="0.01" min="0"
+                    type="number" step="0.01"
                     placeholder="0.00"
-                    className={`${INPUT_BASE} font-mono text-lg ${errors.price ? INPUT_ERR : INPUT_OK}`}
+                    className={`${INPUT_BASE} font-mono ${errors.price ? INPUT_ERR : INPUT_OK}`}
                   />
                 </Field>
-                <Field label="السعر قبل الخصم" error={errors.oldPrice}>
+                <Field label="السعر القديم" error={errors.oldPrice}>
                   <input
                     {...register('oldPrice')}
-                    type="number" step="0.01" min="0"
+                    type="number" step="0.01"
                     placeholder="اختياري"
-                    className={`${INPUT_BASE} font-mono text-lg ${errors.oldPrice ? INPUT_ERR : INPUT_OK}`}
+                    className={`${INPUT_BASE} font-mono ${errors.oldPrice ? INPUT_ERR : INPUT_OK}`}
                   />
                 </Field>
-                <Field label="الكمية بالمخزن" error={errors.stock}>
+                <Field label="المخزون" error={errors.stock}>
                   <input
                     {...register('stock')}
-                    type="number" min="0"
+                    type="number"
                     placeholder="0"
-                    className={`${INPUT_BASE} font-mono text-lg ${errors.stock ? INPUT_ERR : INPUT_OK}`}
+                    className={`${INPUT_BASE} font-mono ${errors.stock ? INPUT_ERR : INPUT_OK}`}
                   />
                 </Field>
               </div>
@@ -457,12 +491,11 @@ export default function AdminProductsPage() {
                 <label className="flex items-center gap-4 cursor-pointer group bg-[#020617] p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors shadow-inner">
                   <div className="relative">
                     <input type="checkbox" {...register('isActive')} className="sr-only peer" />
-                    <div className="w-12 h-6 bg-slate-800 border border-slate-600 rounded-full peer-checked:bg-emerald-500 peer-checked:border-emerald-400 transition-all" />
-                    <div className="absolute top-1 left-1 w-4 h-4 bg-slate-300 rounded-full shadow-md transition-all peer-checked:translate-x-6 peer-checked:bg-white" />
+                    <div className="w-12 h-6 bg-slate-800 border border-slate-600 rounded-full peer-checked:bg-emerald-500 transition-all" />
+                    <div className="absolute top-1 left-1 w-4 h-4 bg-slate-300 rounded-full transition-all peer-checked:translate-x-6 peer-checked:bg-white" />
                   </div>
                   <div>
                     <span className="block text-sm font-bold text-white">تفعيل المنتج</span>
-                    <span className="block text-[11px] font-bold text-slate-400 mt-1">سيظهر للعملاء في المتجر فور تفعيله</span>
                   </div>
                 </label>
               </div>
@@ -471,14 +504,14 @@ export default function AdminProductsPage() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="flex-1 py-4 border border-slate-700 bg-slate-800 rounded-[1.25rem] text-sm font-bold text-white hover:bg-slate-700 transition-colors shadow-sm"
+                  className="flex-1 py-4 border border-slate-700 bg-slate-800 rounded-[1.25rem] text-sm font-bold text-white hover:bg-slate-700 transition-colors"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-[2] flex items-center justify-center gap-2 py-4 text-white rounded-[1.25rem] text-sm font-black transition-all disabled:opacity-70 shadow-xl shadow-indigo-500/20 active:scale-[0.98] bg-gradient-to-br from-indigo-500 to-indigo-600 border border-indigo-400/30 hover:shadow-indigo-500/40"
+                  className="flex-[2] flex items-center justify-center gap-2 py-4 text-white rounded-[1.25rem] text-sm font-black transition-all disabled:opacity-70 bg-gradient-to-br from-indigo-500 to-indigo-600 hover:shadow-indigo-500/40 shadow-xl"
                 >
                   {saving ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> جاري الحفظ...</>

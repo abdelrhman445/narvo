@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Package, ShoppingCart, DollarSign,
-  Mail, LogOut, ShoppingBag, Menu, X, ChevronLeft
+  Mail, LogOut, ShoppingBag, Menu, X, ChevronLeft, Layers // أضفنا Layers هنا
 } from 'lucide-react';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/products', label: 'Products', icon: Package },
+  { href: '/categories', label: 'Categories', icon: Layers }, // الزر الجديد هنا
   { href: '/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/finance', label: 'Finance', icon: DollarSign },
   { href: '/marketing', label: 'Marketing', icon: Mail },
