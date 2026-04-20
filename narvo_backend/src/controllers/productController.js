@@ -1,6 +1,7 @@
 const { z } = require('zod');
 const mongoose = require('mongoose');
 const Product = require('../models/Product');
+const Category = require('../models/Category'); 
 const { asyncHandler, AppError } = require('../middlewares/errorHandler');
 
 // ─── Zod Schemas ─────────────────────────────────────────────────────────────
@@ -8,6 +9,7 @@ const { asyncHandler, AppError } = require('../middlewares/errorHandler');
 const createProductSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters').max(200),
   description: z.string().min(10, 'Description must be at least 10 characters').max(5000),
+  category: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid Category ID'),
   images: z
     .array(z.string().url('Each image must be a valid URL'))
     .min(1, 'At least one image is required')
@@ -31,6 +33,7 @@ const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   search: z.string().max(100).optional(),
+  category: z.string().optional(),
   minPrice: z.coerce.number().positive().optional(),
   maxPrice: z.coerce.number().positive().optional(),
   inStock: z.coerce.boolean().optional(),
@@ -43,9 +46,19 @@ const paginationSchema = z.object({
  * Fetch all active products with pagination and optional filtering
  */
 const getProducts = asyncHandler(async (req, res) => {
-  const { page, limit, search, minPrice, maxPrice, inStock } = paginationSchema.parse(req.query);
+  const { page, limit, search, minPrice, maxPrice, inStock , category} = paginationSchema.parse(req.query);
 
   const filter = { isActive: true };
+
+  if (category) {
+    const foundCategory = await Category.findOne({ slug: category });
+    if (foundCategory) {
+      filter.category = foundCategory._id;
+    } else {
+      // لو بعت قسم مش موجود، رجع داتا فاضية بدل ما ترجع كل حاجة
+      return res.status(200).json({ success: true, data: [], pagination: { total: 0 } });
+    }
+  }
 
   if (search) {
     filter.$text = { $search: search };
@@ -68,6 +81,7 @@ const getProducts = asyncHandler(async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
+      .populate('category', 'name slug')
       .select('-__v'),
     Product.countDocuments(filter),
   ]);
@@ -208,7 +222,7 @@ const adminGetProducts = asyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
 
   const [products, total] = await Promise.all([
-    Product.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Product.find().populate('category', 'name').sort({ createdAt: -1 }).skip(skip).limit(limit),
     Product.countDocuments(),
   ]);
 
