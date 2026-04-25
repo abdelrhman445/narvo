@@ -58,18 +58,18 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* اللوجو */}
-<Link 
-  href="/" 
-  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group h-12 w-12 sm:h-14 sm:w-14 overflow-hidden rounded-full border border-border bg-black shadow-sm z-0"
+          {/* اللوجو - نسخة سايحة وأكبر سيكا */}
+<Link 
+  href="/" 
+  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group h-16 w-16 z-0"
 >
-  <Image 
-    src="/logo.png" 
-    alt="Narvo Logo" 
-    fill
-    className="object-contain p-1.5 transition-transform group-hover:scale-105 duration-300"
-    priority
-  />
+  <Image 
+    src="/logo.png" 
+    alt="Narvo Logo" 
+    fill
+    className="object-contain transition-transform group-hover:scale-110 duration-300"
+    priority
+  />
 </Link>
 
           {/* الجانب الأيسر: الأزرار والإجراءات */}
