@@ -9,19 +9,19 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="flex flex-col items-center mb-12">
-          {/* Logo - الستايل الجديد (الكبسولة السوداء) */}
-          <Link 
-            href="/" 
-            className="group relative h-12 w-32 overflow-hidden rounded-full border border-gray-100 dark:border-slate-800 bg-black shadow-sm transition-all hover:shadow-md flex items-center justify-center mb-6"
-          >
-            <Image 
-              src="/logo.png" 
-              alt="Narvo Logo" 
-              fill
-              className="object-cover transition-transform group-hover:scale-105 duration-300"
-              priority
-            />
-          </Link>
+          {/* Logo - الستايل الجديد (الدائرة السوداء) */}
+<Link 
+  href="/" 
+  className="group relative h-14 w-14 overflow-hidden rounded-full border border-gray-100 dark:border-slate-800 bg-black shadow-sm transition-all hover:shadow-md flex items-center justify-center mb-6"
+>
+  <Image 
+    src="/logo.png" 
+    alt="Narvo Logo" 
+    fill
+    className="object-contain p-2 transition-transform group-hover:scale-110 duration-300"
+    priority
+  />
+</Link>
           
           <p className="text-gray-400 dark:text-gray-500 text-sm font-medium max-w-xs text-center leading-relaxed transition-colors">
             نسق حياتك بأسلوب نارفو. جودة استثنائية وتصاميم تليق بك.
