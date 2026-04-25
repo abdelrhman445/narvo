@@ -12,15 +12,18 @@ export default function Footer() {
           {/* Logo - الستايل الجديد (الدائرة السوداء) */}
 <Link 
   href="/" 
-  className="group relative h-14 w-14 overflow-hidden rounded-full border border-gray-100 dark:border-slate-800 bg-black shadow-sm transition-all hover:shadow-md flex items-center justify-center mb-6"
+  className="group relative mb-6"
 >
-  <Image 
-    src="/logo.png" 
-    alt="Narvo Logo" 
-    fill
-    className="object-contain p-2 transition-transform group-hover:scale-110 duration-300"
-    priority
-  />
+  <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-black shadow-xl border-2 border-white/10 overflow-hidden flex items-center justify-center">
+    <Image 
+      src="/logo.png" 
+      alt="Narvo Logo" 
+      width={64}
+      height={64}
+      className="object-cover w-full h-full transition-transform group-hover:scale-110 duration-300"
+      priority
+    />
+  </div>
 </Link>
           
           <p className="text-gray-400 dark:text-gray-500 text-sm font-medium max-w-xs text-center leading-relaxed transition-colors">
