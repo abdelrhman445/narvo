@@ -28,7 +28,7 @@ transporter.verify((error) => {
  */
 const sendMail = async ({ to, subject, html, text }) => {
   return transporter.sendMail({
-    from: `"E-Commerce Store" <${process.env.SMTP_FROM}>`,
+    from: `"Narvo Store" <${process.env.SMTP_FROM}>`,
     to,
     subject,
     html,
