@@ -58,16 +58,16 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* اللوجو - نسخة سايحة وأكبر سيكا */}
+{/* اللوجو - نسخة الدائرة الكبيرة واللوجو الواضح */}
 <Link 
   href="/" 
-  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group h-16 w-16 z-0"
+  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group h-20 w-20 rounded-full bg-black z-0 shadow-lg"
 >
   <Image 
     src="/logo.png" 
     alt="Narvo Logo" 
     fill
-    className="object-contain transition-transform group-hover:scale-110 duration-300"
+    className="object-contain p-1 transition-transform group-hover:scale-110 duration-300"
     priority
   />
 </Link>
