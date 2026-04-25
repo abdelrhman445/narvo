@@ -58,18 +58,21 @@ export default function Navbar() {
             </button>
           </div>
 
-{/* اللوجو - بدون فريم، طايرة حرة */}
+{/* اللوجو - دايرة صح */}
 <Link 
   href="/" 
-  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group h-16 w-16 sm:h-20 sm:w-20 z-0"
+  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center group z-0"
 >
-  <Image 
-    src="/logo.png" 
-    alt="Narvo Logo" 
-    fill
-    className="object-contain transition-transform group-hover:scale-110 duration-300"
-    priority
-  />
+  <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-black shadow-xl border-2 border-white/10 overflow-hidden flex items-center justify-center">
+    <Image 
+      src="/logo.png" 
+      alt="Narvo Logo" 
+      width={56}
+      height={56}
+      className="object-cover w-full h-full transition-transform group-hover:scale-110 duration-300"
+      priority
+    />
+  </div>
 </Link>
           {/* الجانب الأيسر: الأزرار والإجراءات */}
           <div className="flex-1 md:flex-1 flex items-center justify-end gap-1 sm:gap-3 z-10">
