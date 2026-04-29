@@ -130,7 +130,7 @@ export default function CheckoutPage() {
             
             <div className="bg-card p-8 rounded-[2rem] border border-border shadow-xl shadow-gray-200/20 dark:shadow-none transition-colors">
               <h3 className="text-xl font-bold text-foreground mb-8 flex items-center gap-3 transition-colors">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm transition-colors">1</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-600 text-white text-sm transition-colors">1</span>
                 تفاصيل الشحن
               </h3>
 
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
                     {...register('fullName')}
                     placeholder="الاسم ثلاثي كما في البطاقة"
                     className={`w-full px-5 py-4 border-2 rounded-2xl text-sm bg-background hover:bg-secondary focus:bg-background text-foreground focus:outline-none transition-all ${
-                      errors.fullName ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-primary'
+                      errors.fullName ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-red-500'
                     }`}
                   />
                   {errors.fullName && <p className="text-[10px] font-bold text-rose-500 mt-2 px-1">{errors.fullName.message}</p>}
@@ -155,7 +155,7 @@ export default function CheckoutPage() {
                     placeholder="01xxxxxxxxx"
                     dir="ltr"
                     className={`w-full px-5 py-4 border-2 rounded-2xl text-sm bg-background hover:bg-secondary focus:bg-background text-foreground focus:outline-none transition-all text-right font-mono ${
-                      errors.phone ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-primary'
+                      errors.phone ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-red-500'
                     }`}
                   />
                   {errors.phone && <p className="text-[10px] font-bold text-rose-500 mt-2 px-1">{errors.phone.message}</p>}
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                     {...register('city')}
                     placeholder="المحافظة / المدينة"
                     className={`w-full px-5 py-4 border-2 rounded-2xl text-sm bg-background hover:bg-secondary focus:bg-background text-foreground focus:outline-none transition-all ${
-                      errors.city ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-primary'
+                      errors.city ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-red-500'
                     }`}
                   />
                   {errors.city && <p className="text-[10px] font-bold text-rose-500 mt-2 px-1">{errors.city.message}</p>}
@@ -180,7 +180,7 @@ export default function CheckoutPage() {
                     placeholder="رقم المبنى، اسم الشارع، رقم الشقة، أو أي علامات مميزة لتسهيل الوصول..."
                     rows={4}
                     className={`w-full px-5 py-4 border-2 rounded-2xl text-sm bg-background hover:bg-secondary focus:bg-background text-foreground focus:outline-none transition-all resize-none ${
-                      errors.address ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-primary'
+                      errors.address ? 'border-rose-200 dark:border-rose-900/50 focus:border-rose-500' : 'border-border focus:border-red-500'
                     }`}
                   />
                   {errors.address && <p className="text-[10px] font-bold text-rose-500 mt-2 px-1">{errors.address.message}</p>}
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
 
             <div className="bg-card p-8 rounded-[2rem] border border-border shadow-xl shadow-gray-200/20 dark:shadow-none transition-colors">
               <h3 className="text-xl font-bold text-foreground mb-8 flex items-center gap-3 transition-colors">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm transition-colors">2</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-600 text-white text-sm transition-colors">2</span>
                 طريقة الدفع
               </h3>
               
@@ -215,7 +215,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full relative group overflow-hidden bg-primary text-primary-foreground rounded-[1.5rem] py-5 font-bold text-lg transition-all duration-300 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-2xl shadow-primary/20 hover:opacity-90"
+                className="w-full relative group overflow-hidden bg-red-600 text-white rounded-[1.5rem] py-5 font-bold text-lg transition-all duration-300 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-2xl shadow-red-600/20 hover:bg-red-700 hover:shadow-red-600/40"
               >
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 dark:via-black/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                 <div className="relative flex items-center justify-center gap-3">
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
               <h3 className="text-xl font-black text-foreground flex items-center gap-3 transition-colors">
                 <ShoppingBag className="w-5 h-5" /> ملخص السلة
               </h3>
-              <span className="bg-card border border-border px-3 py-1 rounded-full text-xs font-bold text-muted-foreground transition-colors">
+              <span className="bg-card border border-border px-3 py-1 rounded-full text-xs font-bold text-red-600 dark:text-red-400 transition-colors">
                 {itemCount} عناصر
               </span>
             </div>
@@ -249,14 +249,14 @@ export default function CheckoutPage() {
             <div className="space-y-6 mb-8 max-h-[450px] overflow-y-auto pr-4 custom-scrollbar">
               {items.map((item) => (
                 <div key={item._id} className="flex gap-5 group">
-                  <div className="relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden bg-background border border-border shadow-sm group-hover:border-primary transition-colors">
+                  <div className="relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden bg-background border border-border shadow-sm group-hover:border-red-500 transition-colors">
                     <Image
                       src={getProductImage(item.images)}
                       alt={item.title}
                       fill
                       className="object-cover"
                     />
-                    <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-background shadow-sm z-10 transition-colors">
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-background shadow-sm z-10 transition-colors">
                       {item.quantity}
                     </span>
                   </div>
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
                     <p className="text-sm font-bold text-foreground line-clamp-2 leading-snug transition-colors">{item.title}</p>
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest transition-colors">{formatPrice(item.price)} / للقطعة</p>
-                      <p className="text-sm font-black text-foreground transition-colors">
+                      <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 transition-colors">
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
@@ -279,13 +279,12 @@ export default function CheckoutPage() {
                 <span className="font-bold text-foreground transition-colors">{formatPrice(subtotal)}</span>
               </div>
               
-              
               <div className="pt-4 mt-4 border-t border-border border-dashed flex justify-between items-end transition-colors">
                 <div>
                   <span className="block text-foreground font-black text-lg transition-colors">الإجمالي المالي</span>
                   <span className="block text-[10px] text-muted-foreground font-bold mt-1 transition-colors">شامل ضريبة القيمة المضافة</span>
                 </div>
-                <span className="text-3xl font-black text-foreground tracking-tighter transition-colors">{formatPrice(subtotal)}</span>
+                <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tighter transition-colors">{formatPrice(subtotal)}</span>
               </div>
             </div>
             
