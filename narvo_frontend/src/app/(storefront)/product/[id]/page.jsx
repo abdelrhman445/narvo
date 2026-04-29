@@ -181,24 +181,24 @@ export default function ProductPage() {
               </div>
 
               <button
-                onClick={handleAddToCart}
-                disabled={adding || product.stock === 0}
-                className={`w-full flex items-center justify-center gap-2 py-5 rounded-2xl text-lg font-bold transition-all duration-300 active:scale-[0.98] shadow-sm ${
-                  adding
-                    ? 'bg-red-500 text-white shadow-red-500/30 border-red-500'
-                    : inCart
-                    ? 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-2 border-red-200 dark:border-red-500/30 hover:bg-red-100'
-                    : 'bg-red-600 text-white hover:bg-red-700 shadow-xl shadow-red-600/20'
-                }`}
-              >
-                {adding ? (
-                  <><Check className="w-6 h-6" /> تمت الإضافة!</>
-                ) : inCart ? (
-                  <><Check className="w-6 h-6" /> متواجد في السلة ({cartQty})</>
-                ) : (
-                  <><ShoppingCart className="w-6 h-6" /> أضف إلى السلة</>
-                )}
-              </button>
+  onClick={handleAddToCart}
+  disabled={adding || product.stock === 0}
+  className={`w-full flex items-center justify-center gap-2 py-5 rounded-2xl text-lg font-bold transition-all duration-300 active:scale-[0.98] shadow-sm ${
+    adding
+      ? 'bg-red-500 text-white shadow-red-500/30 border-red-500'
+      : inCart
+      ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-100'
+      : 'bg-red-600 text-white hover:bg-red-700 shadow-xl shadow-red-600/20'
+  }`}
+>
+  {adding ? (
+    <><Check className="w-6 h-6" /> تمت الإضافة!</>
+  ) : inCart ? (
+    <><Check className="w-6 h-6" /> متواجد في السلة ({cartQty})</>
+  ) : (
+    <><ShoppingCart className="w-6 h-6" /> أضف إلى السلة</>
+  )}
+</button>
 
               {inCart && (
                 <button
