@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Layers, ArrowRight, Loader2, ChevronLeft } from 'lucide-react';
-import api from '@/lib/axios'; // نستخدم api العام
+import api from '@/lib/axios'; 
 import Link from 'next/link';
 
 export default function AllCategoriesPage() {
@@ -25,7 +25,7 @@ export default function AllCategoriesPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-background flex items-center justify-center transition-colors duration-300">
-      <Loader2 className="w-10 h-10 text-primary animate-spin" />
+      <Loader2 className="w-10 h-10 text-red-600 animate-spin" />
     </div>
   );
 
@@ -57,16 +57,16 @@ export default function AllCategoriesPage() {
           <Link 
             href={`/category/${cat.slug}`} 
             key={cat._id}
-            className="group relative bg-card border border-border p-10 rounded-[2.5rem] overflow-hidden hover:border-primary/30 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 animate-slide-up"
+            className="group relative bg-card border border-border p-10 rounded-[2.5rem] overflow-hidden hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 animate-slide-up"
             style={{ animationDelay: `${i * 0.1}s`, animationFillMode: 'both' }}
           >
-            {/* Background Accent - الدائرة الخلفية أصبحت أهدأ */}
+            {/* Background Accent */}
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-secondary rounded-full group-hover:scale-[3] group-hover:bg-secondary/80 transition-transform duration-700 ease-in-out" />
             
             <div className="relative z-10">
-              {/* Icon Box - يسحب من اللون الأساسي (أبيض في الدارك) */}
-              <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-primary/10 group-hover:-translate-y-1 transition-transform">
-                <Layers className="w-6 h-6 text-primary-foreground transition-colors" />
+              {/* Icon Box */}
+              <div className="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-red-600/20 group-hover:-translate-y-1 transition-transform">
+                <Layers className="w-6 h-6 text-white transition-colors" />
               </div>
               
               <h2 className="text-2xl font-black text-foreground mb-3 tracking-tight group-hover:text-muted-foreground transition-colors">
@@ -77,9 +77,9 @@ export default function AllCategoriesPage() {
                 استكشف أحدث المنتجات المتاحة الآن في قسم {cat.name}.
               </p>
               
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-foreground transition-colors">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-foreground group-hover:text-red-600 transition-colors">
                 عرض القسم
-                <div className="w-8 h-px bg-border group-hover:w-12 group-hover:bg-primary transition-all duration-300" />
+                <div className="w-8 h-px bg-border group-hover:w-12 group-hover:bg-red-600 transition-all duration-300" />
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </div>
             </div>
