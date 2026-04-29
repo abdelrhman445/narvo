@@ -96,10 +96,10 @@ export default function ProductPage() {
               priority
             />
             {discountPercent && (
-  <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md z-10">
-    -{discountPercent}%
-  </span>
-)}
+              <span className="absolute top-4 left-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md z-10">
+                -{discountPercent}%
+              </span>
+            )}
           </div>
 
           {/* Thumbnails */}
@@ -185,10 +185,10 @@ export default function ProductPage() {
                 disabled={adding || product.stock === 0}
                 className={`w-full flex items-center justify-center gap-2 py-5 rounded-2xl text-lg font-bold transition-all duration-300 active:scale-[0.98] shadow-sm ${
                   adding
-                    ? 'bg-emerald-500 text-white shadow-emerald-500/30 border-emerald-500'
+                    ? 'bg-red-500 text-white shadow-red-500/30 border-red-500'
                     : inCart
-                    ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-200 dark:border-emerald-500/30 hover:bg-emerald-100'
-                    : 'bg-primary text-primary-foreground hover:opacity-90 shadow-xl shadow-primary/10'
+                    ? 'bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border-2 border-red-200 dark:border-red-500/30 hover:bg-red-100'
+                    : 'bg-red-600 text-white hover:bg-red-700 shadow-xl shadow-red-600/20'
                 }`}
               >
                 {adding ? (
@@ -203,7 +203,7 @@ export default function ProductPage() {
               {inCart && (
                 <button
                   onClick={() => router.push('/cart')}
-                  className="w-full py-4 rounded-2xl border-2 border-border text-foreground text-sm font-bold hover:border-primary transition-all bg-background active:scale-[0.98]"
+                  className="w-full py-4 rounded-2xl border-2 border-red-600 bg-red-600 text-white text-sm font-bold hover:bg-red-700 hover:border-red-700 transition-all active:scale-[0.98]"
                 >
                   الذهاب إلى الدفع ←
                 </button>
