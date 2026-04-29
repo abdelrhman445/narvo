@@ -105,7 +105,7 @@ export default function ProductCard({ product }) {
                 ? 'bg-emerald-500 text-white shadow-emerald-500/20'
                 : inCart
                 ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-2 border-emerald-200 dark:border-emerald-500/30'
-                : 'bg-primary text-primary-foreground hover:opacity-90 shadow-xl shadow-primary/10'
+                : 'bg-red-600 text-white hover:bg-red-700 shadow-xl shadow-red-600/20'
             )}
           >
             {product.stock === 0 ? (
