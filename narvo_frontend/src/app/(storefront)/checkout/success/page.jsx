@@ -33,7 +33,7 @@ function SuccessContent() {
         {orderId && (
           <div className="bg-white dark:bg-card border border-border rounded-[2rem] p-8 mb-8 text-right shadow-xl shadow-gray-200/20 dark:shadow-none relative overflow-hidden transition-colors">
             {/* Top decorative bar */}
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-primary opacity-80"></div>
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-red-600 opacity-80"></div>
             
             <div className="flex items-center justify-between mb-8 pb-6 border-b border-border border-dashed transition-colors">
               <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
@@ -103,7 +103,7 @@ function SuccessContent() {
               <div key={s.step} className="flex items-center gap-6 relative z-10">
                 <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black transition-all ${
                   s.active 
-                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-110' 
+                    ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 scale-110' 
                     : 'bg-background border-2 border-border text-muted-foreground'
                 }`}>
                   {s.active ? s.icon : s.step}
@@ -124,7 +124,7 @@ function SuccessContent() {
         {/* Return Button */}
         <Link
           href="/"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-12 py-5 bg-primary text-primary-foreground rounded-[1.5rem] font-bold text-lg hover:opacity-90 transition-all active:scale-[0.98] shadow-2xl shadow-primary/20"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-12 py-5 bg-red-600 text-white rounded-[1.5rem] font-bold text-lg hover:bg-red-700 transition-all active:scale-[0.98] shadow-2xl shadow-red-600/20"
         >
           <ShoppingBag className="w-5 h-5" />
           العودة للتسوق
@@ -138,7 +138,7 @@ export default function SuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-background transition-colors">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <Loader2 className="w-12 h-12 text-red-600 animate-spin" />
       </div>
     }>
       <SuccessContent />
