@@ -68,7 +68,7 @@ export default function CartPage() {
         </div>
         <button 
           onClick={() => { clearCart(); toast.success('تم إفراغ السلة بنجاح'); }} 
-          className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-destructive transition-colors bg-secondary px-4 py-2 rounded-xl border border-border"
+          className="flex items-center gap-2 text-sm font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors bg-red-50 dark:bg-red-500/10 px-4 py-2 rounded-xl border border-red-200 dark:border-red-500/20 hover:bg-red-100 dark:hover:bg-red-500/20"
         >
           <Trash2 className="w-4 h-4" /> إفراغ السلة بالكامل
         </button>
@@ -99,19 +99,18 @@ export default function CartPage() {
             <div className="space-y-5 mb-8">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-muted-foreground font-bold transition-colors">الإجمالي الفرعي</span>
-                <span className="font-bold text-foreground transition-colors">{formatPrice(subtotal)}</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400 transition-colors">{formatPrice(subtotal)}</span>
               </div>
-              
               
               <div className="pt-5 mt-5 border-t border-border flex justify-between items-center transition-colors">
                 <span className="font-bold text-foreground text-lg">الإجمالي</span>
-                <span className="font-black text-3xl text-foreground tracking-tight transition-colors">{formatPrice(subtotal)}</span>
+                <span className="font-black text-3xl text-emerald-600 dark:text-emerald-400 tracking-tight transition-colors">{formatPrice(subtotal)}</span>
               </div>
             </div>
 
             <button 
               onClick={handleCheckout} 
-              className="w-full flex items-center justify-center gap-3 py-5 bg-primary text-primary-foreground rounded-[1.25rem] font-bold text-lg hover:opacity-90 transition-all active:scale-[0.98] shadow-xl shadow-primary/20"
+              className="w-full flex items-center justify-center gap-3 py-5 bg-red-600 text-white rounded-[1.25rem] font-bold text-lg hover:bg-red-700 transition-all active:scale-[0.98] shadow-xl shadow-red-600/20"
             >
               متابعة الدفع <ArrowLeft className="w-5 h-5" />
             </button>
