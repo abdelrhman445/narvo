@@ -57,13 +57,13 @@ export default function AllCategoriesPage() {
           <Link 
             href={`/category/${cat.slug}`} 
             key={cat._id}
-            className="group relative bg-card border border-border p-10 rounded-[2.5rem] overflow-hidden hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 animate-slide-up"
+            className="group relative bg-card border border-border p-10 rounded-[2.5rem] overflow-hidden hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-500 animate-slide-up flex flex-col"
             style={{ animationDelay: `${i * 0.1}s`, animationFillMode: 'both' }}
           >
             {/* Background Accent */}
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-secondary rounded-full group-hover:scale-[3] group-hover:bg-secondary/80 transition-transform duration-700 ease-in-out" />
             
-            <div className="relative z-10">
+            <div className="relative z-10 flex-1 flex flex-col">
               {/* Icon Box */}
               <div className="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-red-600/20 group-hover:-translate-y-1 transition-transform">
                 <Layers className="w-6 h-6 text-white transition-colors" />
@@ -73,14 +73,14 @@ export default function AllCategoriesPage() {
                 {cat.name}
               </h2>
               
-              <p className="text-muted-foreground text-sm font-medium leading-relaxed mb-8 max-w-[200px] transition-colors">
+              <p className="text-muted-foreground text-sm font-medium leading-relaxed mb-8 max-w-[200px] transition-colors flex-1">
                 استكشف أحدث المنتجات المتاحة الآن في قسم {cat.name}.
               </p>
               
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-foreground group-hover:text-red-600 transition-colors">
+              {/* Button "عرض القسم" */}
+              <div className="w-fit inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white bg-red-600 px-6 py-3 rounded-[1.25rem] shadow-md shadow-red-600/10 group-hover:bg-red-700 group-hover:shadow-lg group-hover:shadow-red-600/30 transition-all duration-300">
                 عرض القسم
-                <div className="w-8 h-px bg-border group-hover:w-12 group-hover:bg-red-600 transition-all duration-300" />
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
               </div>
             </div>
           </Link>
